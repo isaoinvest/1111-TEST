@@ -70,15 +70,15 @@
     </style>
   </head>
   <body>
-    <div id="loading-indicator">正在加載AR體驗，請稍候...</div>
+    <div id="loading-indicator">æ­£å¨å è¼ARé«é©ï¼è«ç¨å...</div>
 
     <div id="frame-controls">
-      <button id="toggle-frame" class="frame-button">隱藏框架</button>
+      <button id="toggle-frame" class="frame-button">é±èæ¡æ¶</button>
       <button id="black-frame" class="frame-button">Black</button>
       <button id="wood-frame" class="frame-button">Wood</button>
       <button id="gold-frame" class="frame-button">Gold</button>
       <button id="red-frame" class="frame-button">Red</button>
-      <button id="play-mp3" class="frame-button">播放音效</button>
+      <button id="play-mp3" class="frame-button">æ­æ¾é³æ</button>
     </div>
 
     <a-scene
@@ -123,7 +123,7 @@
         />
         <video
           id="video1"
-          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/IRON.mp4"
+          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/STRONG.mp4"
           autoplay
           loop
         ></video>
@@ -160,7 +160,7 @@
         <a-entity
           id="interaction-prompt"
           position="0 -0.5 -1"
-          text="value: 點擊元素以互動; align: center; color: #FFFFFF; width: 2"
+          text="value: é»æåç´ ä»¥äºå; align: center; color: #FFFFFF; width: 2"
           animation="property: opacity; from: 0; to: 1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
         ></a-entity>
         <a-entity
@@ -304,7 +304,7 @@
         },
       });
 
-      // MP3 撥放按鈕
+      // MP3 æ¥æ¾æé
       const mp3Button = document.getElementById("play-mp3");
       const mp3Sound = document.getElementById("mp3-sound");
 
@@ -380,7 +380,7 @@
       toggleFrameBtn.addEventListener("click", () => {
         frameVisible = !frameVisible;
         videoFrame.setAttribute("visible", frameVisible);
-        toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
+        toggleFrameBtn.textContent = frameVisible ? "é±èæ¡æ¶" : "é¡¯ç¤ºæ¡æ¶";
         console.log("Frame visibility toggled:", frameVisible);
       });
 
