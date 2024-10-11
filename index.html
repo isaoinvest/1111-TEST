@@ -67,18 +67,6 @@
         background-color: #007bff;
         color: white;
       }
-      #video-loader {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        z-index: 1000;
-        display: none;
-      }
     </style>
   </head>
   <body>
@@ -92,7 +80,7 @@
       <button id="red-frame" class="frame-button">Red</button>
       <button id="play-mp3" class="frame-button">播放音效</button>
     </div>
-    <div id="video-loader">影片加載中，請稍候...</div>
+
     <a-scene
       mindar-image="imageTargetSrc: https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/KKtargets.mind?v=1703167402947;warmupTolerance:5; missTolerance:600; filterMinCF:0.000001; filterBeta:500"
       color-space="sRGB"
@@ -133,12 +121,13 @@
           id="image FB"
           src="https://cdn.glitch.global/d211842b-4e2a-433c-9456-93f3cc8260fe/FB.png?v=1700978270412"
         />
-          <video 
-          id="video1" 
-          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4" 
-          crossorigin="anonymous" 
-          preload="auto"
-          playsinline
+        <video
+          id="video1"
+          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4"
+          crossorigin="anonymous"
+          muted
+          autoplay
+          loop
         ></video>
         <a-asset-item
           id="raccoonModel"
@@ -260,17 +249,16 @@
         ></a-image>
       </a-entity>
 
-<a-entity mindar-image-target="targetIndex: 1">
+      <a-entity mindar-image-target="targetIndex: 1">
         <a-entity id="video-container">
           <a-video
-            id="main-video"
             src="#video1"
             height="1.05"
             width="1.5"
             position="0 0 0"
             rotation="0 0 0"
             class="clickable"
-            visible="false"
+            click-handler1
           ></a-video>
           <a-entity id="video-frame" visible="true">
             <!-- Top -->
@@ -303,170 +291,138 @@
     </a-scene>
 
     <script>
-      // 視頻加載和錯誤處理
-const video = document.getElementById('video1');
-const mainVideo = document.getElementById('main-video');
-const videoLoader = document.getElementById('video-loader');
+      AFRAME.registerComponent("click-handler1", {
+        init: function () {
+          var video = document.querySelector("#video1");
+          var playing = false;
+          this.el.addEventListener("click", function () {
+            if (!playing) {
+              video.play();
+            } else {
+              video.pause();
+            }
+            playing = !playing;
+          });
+        },
+      });
 
-function showVideoLoader() {
-  videoLoader.style.display = 'block';
-}
+      // MP3 撥放按鈕
+      const mp3Button = document.getElementById("play-mp3");
+      const mp3Sound = document.getElementById("mp3-sound");
 
-function hideVideoLoader() {
-  videoLoader.style.display = 'none';
-}
+      mp3Button.addEventListener("click", () => {
+        mp3Sound.play();
+      });
 
-function handleVideoError(error) {
-  console.error('Video error:', error);
-  hideVideoLoader();
-  alert('視頻加載失敗，請檢查網絡連接或重新整理頁面。');
-}
+      // Loading indicator logic
+      const loadingIndicator = document.getElementById("loading-indicator");
+      document.addEventListener("DOMContentLoaded", () => {
+        loadingIndicator.style.display = "block";
+      });
 
-video.addEventListener('loadedmetadata', () => {
-  console.log('Video metadata loaded');
-});
+      document.querySelector("a-scene").addEventListener("loaded", () => {
+        loadingIndicator.style.display = "none";
+      });
 
-video.addEventListener('canplay', () => {
-  console.log('Video can play');
-  mainVideo.setAttribute('visible', 'true');
-  hideVideoLoader();
-});
-
-video.addEventListener('error', handleVideoError);
-
-showVideoLoader();
-
-// 使用 fetch 來流式加載視頻
-fetch(video.src)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.blob();
-  })
-  .then(blob => {
-    const videoUrl = URL.createObjectURL(blob);
-    video.src = videoUrl;
-    mainVideo.setAttribute('src', videoUrl);
-  })
-  .catch(handleVideoError);
-
-// 視頻點擊處理器
-AFRAME.registerComponent("click-handler1", {
-  init: function () {
-    let playing = false;
-    this.el.addEventListener("click", function () {
-      if (!playing) {
-        video.play().catch(handleVideoError);
-      } else {
-        video.pause();
+      // GSAP animation for 3D model
+      const raccoonModel = document.querySelector("a-gltf-model");
+      if (raccoonModel) {
+        raccoonModel.addEventListener("loaded", () => {
+          gsap.to(raccoonModel.object3D.position, {
+            y: "+=0.1",
+            duration: 2,
+            yoyo: true,
+            repeat: -1,
+            ease: "power1.inOut",
+          });
+        });
       }
-      playing = !playing;
-    });
-  },
-});
 
-// MP3 播放按鈕
-const mp3Button = document.getElementById("play-mp3");
-const mp3Sound = document.getElementById("mp3-sound");
+      // Hover effect for clickable elements
+      const clickableElements = document.querySelectorAll(".clickable");
+      clickableElements.forEach((element) => {
+        element.addEventListener("mouseenter", () => {
+          gsap.to(element.object3D.scale, {
+            x: 1.4,
+            y: 1.4,
+            z: 1.4,
+            duration: 0.3,
+          });
+        });
+        element.addEventListener("mouseleave", () => {
+          gsap.to(element.object3D.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
+        });
+      });
 
-mp3Button.addEventListener("click", () => {
-  mp3Sound.play();
-});
+      // Frame control logic
+      const videoFrame = document.querySelector("#video-frame");
+      const toggleFrameBtn = document.querySelector("#toggle-frame");
+      const blackFrameBtn = document.querySelector("#black-frame");
+      const woodFrameBtn = document.querySelector("#wood-frame");
+      const goldFrameBtn = document.querySelector("#gold-frame");
+      const redFrameBtn = document.querySelector("#red-frame");
 
-// Loading indicator logic
-const loadingIndicator = document.getElementById("loading-indicator");
-document.addEventListener("DOMContentLoaded", () => {
-  loadingIndicator.style.display = "block";
-});
+      function setFrameColor(color) {
+        const frameParts = videoFrame.querySelectorAll("a-box");
+        frameParts.forEach((part) => {
+          part.setAttribute("color", color);
+          part.removeAttribute("material");
+        });
+      }
 
-document.querySelector("a-scene").addEventListener("loaded", () => {
-  loadingIndicator.style.display = "none";
-  // 在 A-Frame 場景加載完成後嘗試預加載視頻
-  video.load();
-});
+      function setFrameTexture(textureId) {
+        const frameParts = videoFrame.querySelectorAll("a-box");
+        frameParts.forEach((part) => {
+          part.setAttribute("material", `src: #${textureId}`);
+          part.removeAttribute("color");
+        });
+      }
 
-// GSAP animation for 3D model
-const raccoonModel = document.querySelector("a-gltf-model");
-if (raccoonModel) {
-  raccoonModel.addEventListener("loaded", () => {
-    gsap.to(raccoonModel.object3D.position, {
-      y: "+=0.1",
-      duration: 2,
-      yoyo: true,
-      repeat: -1,
-      ease: "power1.inOut",
-    });
-  });
-}
+      let frameVisible = true;
+      toggleFrameBtn.addEventListener("click", () => {
+        frameVisible = !frameVisible;
+        videoFrame.setAttribute("visible", frameVisible);
+        toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
+        console.log("Frame visibility toggled:", frameVisible);
+      });
 
-// Hover effect for clickable elements
-const clickableElements = document.querySelectorAll(".clickable");
-clickableElements.forEach((element) => {
-  element.addEventListener("mouseenter", () => {
-    gsap.to(element.object3D.scale, {
-      x: 1.4,
-      y: 1.4,
-      z: 1.4,
-      duration: 0.3,
-    });
-  });
-  element.addEventListener("mouseleave", () => {
-    gsap.to(element.object3D.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
-  });
-});
+      blackFrameBtn.addEventListener("click", () => setFrameColor("#000000"));
+      woodFrameBtn.addEventListener("click", () =>
+        setFrameTexture("frame-texture-wood")
+      );
+      goldFrameBtn.addEventListener("click", () =>
+        setFrameTexture("frame-texture-gold")
+      );
+      redFrameBtn.addEventListener("click", () => setFrameColor("#FF0000"));
 
-// Frame control logic
-const videoFrame = document.querySelector("#video-frame");
-const toggleFrameBtn = document.querySelector("#toggle-frame");
-const blackFrameBtn = document.querySelector("#black-frame");
-const woodFrameBtn = document.querySelector("#wood-frame");
-const goldFrameBtn = document.querySelector("#gold-frame");
-const redFrameBtn = document.querySelector("#red-frame");
+      // Debug logging
+      console.log("Frame controls initialized");
+      console.log("Toggle button:", toggleFrameBtn);
+      console.log("Black button:", blackFrameBtn);
+      console.log("Wood button:", woodFrameBtn);
+      console.log("Gold button:", goldFrameBtn);
+      console.log("Red button:", redFrameBtn);
 
-function setFrameColor(color) {
-  const frameParts = videoFrame.querySelectorAll("a-box");
-  frameParts.forEach((part) => {
-    part.setAttribute("color", color);
-    part.removeAttribute("material");
-  });
-}
+      // Video loading and error checking
+      const video = document.getElementById('video1');
+      video.addEventListener('error', (e) => {
+        console.error('Video error:', e);
+      });
+      video.addEventListener('loadedmetadata', () => {
+        console.log('Video metadata loaded');
+      });
 
-function setFrameTexture(textureId) {
-  const frameParts = videoFrame.querySelectorAll("a-box");
-  frameParts.forEach((part) => {
-    part.setAttribute("material", `src: #${textureId}`);
-    part.removeAttribute("color");
-  });
-}
+      // Attempt to play video after A-Frame scene is loaded
+      document.querySelector('a-scene').addEventListener('loaded', () => {
+        video.play().catch(e => console.error('Video play error:', e));
+      });
 
-let frameVisible = true;
-toggleFrameBtn.addEventListener("click", () => {
-  frameVisible = !frameVisible;
-  videoFrame.setAttribute("visible", frameVisible);
-  toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
-  console.log("Frame visibility toggled:", frameVisible);
-});
-
-blackFrameBtn.addEventListener("click", () => setFrameColor("#000000"));
-woodFrameBtn.addEventListener("click", () => setFrameTexture("frame-texture-wood"));
-goldFrameBtn.addEventListener("click", () => setFrameTexture("frame-texture-gold"));
-redFrameBtn.addEventListener("click", () => setFrameColor("#FF0000"));
-
-// Debug logging
-console.log("Frame controls initialized");
-console.log("Toggle button:", toggleFrameBtn);
-console.log("Black button:", blackFrameBtn);
-console.log("Wood button:", woodFrameBtn);
-console.log("Gold button:", goldFrameBtn);
-console.log("Red button:", redFrameBtn);
-
-const imageclick = document.querySelector("#image FB");
-if (imageclick) {
-  imageclick.addEventListener("click", (event) => {
-    console.log("image click");
-  });
-}
+      const imageclick = document.querySelector("#image FB");
+      if (imageclick) {
+        imageclick.addEventListener("click", (event) => {
+          console.log("image click");
+        });
+      }
     </script>
   </body>
 </html>
