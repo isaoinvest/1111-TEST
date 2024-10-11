@@ -124,6 +124,8 @@
         <video
           id="video1"
           src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4"
+          crossorigin="anonymous"
+          muted
           autoplay
           loop
         ></video>
@@ -400,6 +402,20 @@
       console.log("Wood button:", woodFrameBtn);
       console.log("Gold button:", goldFrameBtn);
       console.log("Red button:", redFrameBtn);
+
+      // Video loading and error checking
+      const video = document.getElementById('video1');
+      video.addEventListener('error', (e) => {
+        console.error('Video error:', e);
+      });
+      video.addEventListener('loadedmetadata', () => {
+        console.log('Video metadata loaded');
+      });
+
+      // Attempt to play video after A-Frame scene is loaded
+      document.querySelector('a-scene').addEventListener('loaded', () => {
+        video.play().catch(e => console.error('Video play error:', e));
+      });
 
       const imageclick = document.querySelector("#image FB");
       if (imageclick) {
