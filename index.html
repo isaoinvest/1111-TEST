@@ -1,155 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>WebAR Video Display</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-        }
-        #loading-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        #frame-controls {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-        }
-        .frame-button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .frame-button:hover {
-            opacity: 0.8;
-        }
-        #toggle-frame {
-            background-color: #4caf50;
-            color: white;
-        }
-        #play-mp3 {
-            background-color: #007bff;
-            color: white;
-        }
+      #loading-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        display: none;
+      }
+      #frame-controls {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+      }
+      .frame-button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+      .frame-button:hover {
+        opacity: 0.8;
+      }
+      #toggle-frame {
+        background-color: #4caf50;
+        color: white;
+      }
     </style>
-</head>
-<body>
-    <div id="loading-indicator">Loading AR experience, please wait...</div>
+  </head>
+  <body>
+    <div id="loading-indicator">正在加載AR體驗，請稍候...</div>
 
     <div id="frame-controls">
-        <button id="toggle-frame" class="frame-button">Toggle Frame</button>
-        <button id="play-mp3" class="frame-button">Play Sound</button>
+      <button id="toggle-frame" class="frame-button">隱藏框架</button>
+      <button id="black-frame" class="frame-button" style="background-color: #000; color: #fff;">Black</button>
+      <button id="wood-frame" class="frame-button" style="background-color: #8b4513; color: #fff;">Wood</button>
+      <button id="gold-frame" class="frame-button" style="background-color: #ffd700; color: #000;">Gold</button>
+      <button id="red-frame" class="frame-button" style="background-color: #ff0000; color: #fff;">Red</button>
+      <button id="play-mp3" class="frame-button" style="background-color: #007bff; color: #fff;">播放音效</button>
     </div>
 
     <a-scene
-        mindar-image="imageTargetSrc: https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/KKtargets.mind?v=1703167402947; warmupTolerance: 5; missTolerance: 600; filterMinCF: 0.000001; filterBeta: 500"
-        color-space="sRGB"
-        renderer="colorManagement: true, physicallyCorrectLights"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-        embedded
-        loading-screen="enabled: false"
+      mindar-image="imageTargetSrc: https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/KKtargets.mind?v=1703167402947"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
     >
-        <a-assets>
-            <video id="video1" src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV" autoplay loop="true" crossorigin="anonymous" playsinline muted></video>
-            <audio id="mp3-sound" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/avengers_assemble.mp3?v=1728377587921" crossorigin="anonymous"></audio>
-        </a-assets>
+      <a-assets>
+        <img id="profile" src="https://cdn.glitch.global/d211842b-4e2a-433c-9456-93f3cc8260fe/%E5%A4%A7%E9%A0%AD%E7%85%A7.png?v=1699354398583" />
+        <img id="frame-texture-wood" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/istockphoto-1393065816-612x612.jpg?v=1728362602087" crossorigin="anonymous" />
+        <img id="frame-texture-gold" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/pngtree-gold-textured-background-image_1366422.jpg?v=1728362572428" crossorigin="anonymous" />
+        <audio id="mp3-sound" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/avengers_assemble.mp3?v=1728377587921"></audio>
+      </a-assets>
 
-        <a-camera
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model
+          id="raccoon-model"
+          rotation="0 0 0"
+          position="-0.25 -0.15 0"
+          scale="0.09 0.09 0.09"
+          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/image-tracking/assets/band-example/raccoon/scene.gltf"
+          animation-mixer
+        ></a-gltf-model>
+        <a-image src="#profile" width="0.55" height="0.55" position="0.6 0.9 -1.5" rotation="0 0 0"></a-image>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-entity id="video-container">
+          <a-video
+            id="video1"
+            src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV"
+            height="1.05"
+            width="1.5"
             position="0 0 0"
-            look-controls="enabled: false"
-            cursor="fuse: false; rayOrigin: mouse;"
-            raycaster="far: 50; objects: .clickable"
-        ></a-camera>
-
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-video
-                src="#video1"
-                height="1.05"
-                width="1.5"
-                position="0 0 0"
-                rotation="0 0 0"
-                class="clickable"
-                play-video-handler
-                crossorigin="anonymous"
-                playsinline
-            ></a-video>
-            <a-entity id="video-frame" visible="true">
-                <!-- Frame Elements -->
-                <a-box position="0 0.5625 0" scale="1.5 0.05 0.05" color="#000000"></a-box>
-                <a-box position="0 -0.5625 0" scale="1.5 0.05 0.05" color="#000000"></a-box>
-                <a-box position="-0.75 0 0" scale="0.05 1.15 0.05" color="#000000"></a-box>
-                <a-box position="0.75 0 0" scale="0.05 1.15 0.05" color="#000000"></a-box>
-            </a-entity>
+            rotation="0 0 0"
+            class="clickable"
+          ></a-video>
+          <a-entity id="video-frame" visible="true">
+            <a-box position="0 0.5625 0" scale="1.5 0.05 0.05" color="#000000"></a-box>
+            <a-box position="0 -0.5625 0" scale="1.5 0.05 0.05" color="#000000"></a-box>
+            <a-box position="-0.75 0 0" scale="0.05 1.15 0.05" color="#000000"></a-box>
+            <a-box position="0.75 0 0" scale="0.05 1.15 0.05" color="#000000"></a-box>
+          </a-entity>
         </a-entity>
+      </a-entity>
     </a-scene>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const loadingIndicator = document.getElementById('loading-indicator');
-            document.querySelector('a-scene').addEventListener('loaded', () => {
-                loadingIndicator.style.display = 'none';
-            });
+      // Loading indicator
+      document.addEventListener("DOMContentLoaded", () => {
+        const loadingIndicator = document.getElementById("loading-indicator");
+        loadingIndicator.style.display = "block";
+      });
 
-            // Sound playback
-            const mp3Button = document.getElementById('play-mp3');
-            const mp3Sound = document.getElementById('mp3-sound');
-            mp3Button.addEventListener('click', () => {
-                mp3Sound.play();
-            });
+      document.querySelector("a-scene").addEventListener("loaded", () => {
+        document.getElementById("loading-indicator").style.display = "none";
+      });
 
-            // Toggle video frame visibility
-            const videoFrame = document.getElementById('video-frame');
-            const toggleFrameBtn = document.getElementById('toggle-frame');
-            let frameVisible = true;
-            toggleFrameBtn.addEventListener('click', () => {
-                frameVisible = !frameVisible;
-                videoFrame.setAttribute('visible', frameVisible);
-                toggleFrameBtn.textContent = frameVisible ? 'Hide Frame' : 'Show Frame';
-            });
+      // GSAP animation for 3D model
+      const raccoonModel = document.getElementById("raccoon-model");
+      raccoonModel.addEventListener("loaded", () => {
+        gsap.to(raccoonModel.object3D.position, {
+          y: "+=0.1",
+          duration: 2,
+          yoyo: true,
+          repeat: -1,
+          ease: "power1.inOut",
         });
+      });
 
-        // Custom component for video play/pause functionality
-        AFRAME.registerComponent('play-video-handler', {
-            init: function () {
-                const videoEl = this.el;
-                videoEl.addEventListener('click', () => {
-                    const video = videoEl.components.material.material.map.image;
-                    if (video.paused) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
-                });
-            }
+      // Hover effect for clickable elements
+      const clickableElements = document.querySelectorAll(".clickable");
+      clickableElements.forEach((element) => {
+        element.addEventListener("mouseenter", () => {
+          gsap.to(element.object3D.scale, {
+            x: 1.4,
+            y: 1.4,
+            z: 1.4,
+            duration: 0.3,
+          });
         });
+        element.addEventListener("mouseleave", () => {
+          gsap.to(element.object3D.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
+        });
+      });
+
+      // Frame control logic
+      const videoFrame = document.querySelector("#video-frame");
+      const toggleFrameBtn = document.querySelector("#toggle-frame");
+      const frameButtons = [
+        { btn: "#black-frame", color: "#000000" },
+        { btn: "#wood-frame", texture: "frame-texture-wood" },
+        { btn: "#gold-frame", texture: "frame-texture-gold" },
+        { btn: "#red-frame", color: "#FF0000" },
+      ];
+
+      function setFrameColor(color) {
+        videoFrame.querySelectorAll("a-box").forEach((part) => {
+          part.setAttribute("color", color);
+          part.removeAttribute("material");
+        });
+      }
+
+      function setFrameTexture(textureId) {
+        videoFrame.querySelectorAll("a-box").forEach((part) => {
+          part.setAttribute("material", `src: #${textureId}`);
+          part.removeAttribute("color");
+        });
+      }
+
+      let frameVisible = true;
+      toggleFrameBtn.addEventListener("click", () => {
+        frameVisible = !frameVisible;
+        videoFrame.setAttribute("visible", frameVisible);
+        toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
+      });
+
+      frameButtons.forEach(({ btn, color, texture }) => {
+        document.querySelector(btn).addEventListener("click", () => {
+          if (color) setFrameColor(color);
+          if (texture) setFrameTexture(texture);
+        });
+      });
+
+      // MP3 撥放按鈕
+      document.getElementById("play-mp3").addEventListener("click", () => {
+        document.getElementById("mp3-sound").play();
+      });
     </script>
-</body>
+  </body>
 </html>
 
