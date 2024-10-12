@@ -1,4 +1,4 @@
-YPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -169,6 +169,7 @@ YPE html>
           scale="2 2 2"
         ></a-entity>
         <a-gltf-model
+          id="raccoonModelEntity"
           rotation="0 0 0"
           position="-0.25 -0.15 0"
           scale="0.09 0.09 0.09"
@@ -289,6 +290,19 @@ YPE html>
     </a-scene>
 
     <script>
+      // Query selectors for re-use
+      const mp3Button = document.getElementById("play-mp3");
+      const mp3Sound = document.getElementById("mp3-sound");
+      const loadingIndicator = document.getElementById("loading-indicator");
+      const videoFrame = document.querySelector("#video-frame");
+      const toggleFrameBtn = document.querySelector("#toggle-frame");
+      const blackFrameBtn = document.querySelector("#black-frame");
+      const woodFrameBtn = document.querySelector("#wood-frame");
+      const goldFrameBtn = document.querySelector("#gold-frame");
+      const redFrameBtn = document.querySelector("#red-frame");
+      const clickableElements = document.querySelectorAll(".clickable");
+      const raccoonModel = document.querySelector("#raccoonModelEntity");
+
       AFRAME.registerComponent("click-handler1", {
         init: function () {
           var video = document.querySelector("#video1");
@@ -304,16 +318,12 @@ YPE html>
         },
       });
 
-      // MP3 撥放按鈕
-      const mp3Button = document.getElementById("play-mp3");
-      const mp3Sound = document.getElementById("mp3-sound");
-
+      // MP3 播放按鈕
       mp3Button.addEventListener("click", () => {
         mp3Sound.play();
       });
 
       // Loading indicator logic
-      const loadingIndicator = document.getElementById("loading-indicator");
       document.addEventListener("DOMContentLoaded", () => {
         loadingIndicator.style.display = "block";
       });
@@ -323,7 +333,6 @@ YPE html>
       });
 
       // GSAP animation for 3D model
-      const raccoonModel = document.querySelector("a-gltf-model");
       if (raccoonModel) {
         raccoonModel.addEventListener("loaded", () => {
           gsap.to(raccoonModel.object3D.position, {
@@ -337,7 +346,6 @@ YPE html>
       }
 
       // Hover effect for clickable elements
-      const clickableElements = document.querySelectorAll(".clickable");
       clickableElements.forEach((element) => {
         element.addEventListener("mouseenter", () => {
           gsap.to(element.object3D.scale, {
@@ -353,13 +361,6 @@ YPE html>
       });
 
       // Frame control logic
-      const videoFrame = document.querySelector("#video-frame");
-      const toggleFrameBtn = document.querySelector("#toggle-frame");
-      const blackFrameBtn = document.querySelector("#black-frame");
-      const woodFrameBtn = document.querySelector("#wood-frame");
-      const goldFrameBtn = document.querySelector("#gold-frame");
-      const redFrameBtn = document.querySelector("#red-frame");
-
       function setFrameColor(color) {
         const frameParts = videoFrame.querySelectorAll("a-box");
         frameParts.forEach((part) => {
@@ -400,13 +401,6 @@ YPE html>
       console.log("Wood button:", woodFrameBtn);
       console.log("Gold button:", goldFrameBtn);
       console.log("Red button:", redFrameBtn);
-
-      const imageclick = document.querySelector("#image FB");
-      if (imageclick) {
-        imageclick.addEventListener("click", (event) => {
-          console.log("image click");
-        });
-      }
     </script>
   </body>
 </html>
