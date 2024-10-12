@@ -123,7 +123,7 @@
         />
         <video
           id="video1"
-          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4"
+          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV"
           autoplay
           loop
         ></video>
@@ -321,6 +321,9 @@
       // MP3 播放按鈕
       mp3Button.addEventListener("click", () => {
         mp3Sound.play();
+        if (navigator.vibrate) {
+          navigator.vibrate(200); // 振動 200 毫秒
+        }
       });
 
       // Loading indicator logic
