@@ -74,9 +74,10 @@
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         embedded
+        loading-screen="enabled: false"
     >
         <a-assets>
-            <video id="video1" src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV" autoplay loop="true" crossorigin="anonymous" playsinline></video>
+            <video id="video1" src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV" autoplay loop="true" crossorigin="anonymous" playsinline muted></video>
             <audio id="mp3-sound" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/avengers_assemble.mp3?v=1728377587921" crossorigin="anonymous"></audio>
         </a-assets>
 
@@ -87,7 +88,7 @@
             raycaster="far: 50; objects: .clickable"
         ></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 1">
+        <a-entity mindar-image-target="targetIndex: 0">
             <a-video
                 src="#video1"
                 height="1.05"
@@ -137,9 +138,9 @@
         // Custom component for video play/pause functionality
         AFRAME.registerComponent('play-video-handler', {
             init: function () {
-                const videoEl = this.el.getAttribute('src');
-                this.el.addEventListener('click', () => {
-                    const video = document.querySelector(videoEl);
+                const videoEl = this.el;
+                videoEl.addEventListener('click', () => {
+                    const video = videoEl.components.material.material.map.image;
                     if (video.paused) {
                         video.play();
                     } else {
