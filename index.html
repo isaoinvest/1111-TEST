@@ -123,7 +123,7 @@
         />
         <video
           id="video1"
-          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4"
+          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV"
           autoplay
           loop
         ></video>
@@ -153,7 +153,7 @@
         position="0 0 0"
         look-controls="enabled: false"
         cursor="fuse: false; rayOrigin: mouse;"
-        raycaster="far: ${customFields.libVersion}; objects: .clickable"
+        raycaster="far: 1000; objects: .clickable"
       ></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
@@ -322,7 +322,11 @@
       mp3Button.addEventListener("click", () => {
         mp3Sound.play();
         if (navigator.vibrate) {
-          navigator.vibrate(200); // 振動 200 毫秒
+          try {
+            window.navigator.vibrate(200); // 振動 200 毫秒
+          } catch (e) {
+            console.log("Vibration not supported or failed on this device.");
+          }
         }
       });
 
@@ -385,25 +389,12 @@
         frameVisible = !frameVisible;
         videoFrame.setAttribute("visible", frameVisible);
         toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
-        console.log("Frame visibility toggled:", frameVisible);
       });
 
       blackFrameBtn.addEventListener("click", () => setFrameColor("#000000"));
-      woodFrameBtn.addEventListener("click", () =>
-        setFrameTexture("frame-texture-wood")
-      );
-      goldFrameBtn.addEventListener("click", () =>
-        setFrameTexture("frame-texture-gold")
-      );
+      woodFrameBtn.addEventListener("click", () => setFrameTexture("frame-texture-wood"));
+      goldFrameBtn.addEventListener("click", () => setFrameTexture("frame-texture-gold"));
       redFrameBtn.addEventListener("click", () => setFrameColor("#FF0000"));
-
-      // Debug logging
-      console.log("Frame controls initialized");
-      console.log("Toggle button:", toggleFrameBtn);
-      console.log("Black button:", blackFrameBtn);
-      console.log("Wood button:", woodFrameBtn);
-      console.log("Gold button:", goldFrameBtn);
-      console.log("Red button:", redFrameBtn);
     </script>
   </body>
 </html>
