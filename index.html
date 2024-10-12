@@ -69,10 +69,11 @@
       device-orientation-permission-ui="enabled: false"
     >
       <a-assets>
-        <img id="profile" src="https://cdn.glitch.global/d211842b-4e2a-433c-9456-93f3cc8260fe/%E5%A4%A7%E9%A0%AD%E7%85%A7.png?v=1699354398583" />
+        <img id="profile" src="https://cdn.glitch.global/d211842b-4e2a-433c-9456-93f3cc8260fe/%E5%A4%A7%E9%A0%AD%E7%85%A7.png?v=1699354398583" crossorigin="anonymous" />
         <img id="frame-texture-wood" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/istockphoto-1393065816-612x612.jpg?v=1728362602087" crossorigin="anonymous" />
         <img id="frame-texture-gold" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/pngtree-gold-textured-background-image_1366422.jpg?v=1728362572428" crossorigin="anonymous" />
-        <audio id="mp3-sound" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/avengers_assemble.mp3?v=1728377587921"></audio>
+        <audio id="mp3-sound" src="https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/avengers_assemble.mp3?v=1728377587921" crossorigin="anonymous"></audio>
+        <video id="video1" src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV" crossorigin="anonymous"></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
@@ -93,12 +94,15 @@
         <a-entity id="video-container">
           <a-video
             id="video1"
-            src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/MYVEDIO.MOV"
+            src="#video1"
             height="1.05"
             width="1.5"
             position="0 0 0"
             rotation="0 0 0"
             class="clickable"
+            crossorigin="anonymous"
+            autoplay
+            loop
           ></a-video>
           <a-entity id="video-frame" visible="true">
             <a-box position="0 0.5625 0" scale="1.5 0.05 0.05" color="#000000"></a-box>
