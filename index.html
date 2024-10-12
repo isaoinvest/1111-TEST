@@ -3,11 +3,13 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Importing necessary libraries -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <style>
+      /* Styles for loading indicator */
       #loading-indicator {
         position: fixed;
         top: 50%;
@@ -20,6 +22,8 @@
         border-radius: 10px;
         display: none;
       }
+      
+      /* Styles for frame controls */
       #frame-controls {
         position: fixed;
         top: 10px;
@@ -32,6 +36,7 @@
         gap: 10px;
         z-index: 1000;
       }
+      
       .frame-button {
         padding: 5px 10px;
         border: none;
@@ -40,9 +45,12 @@
         font-weight: bold;
         transition: all 0.3s ease;
       }
+      
       .frame-button:hover {
         opacity: 0.8;
       }
+      
+      /* Button color styles */
       #toggle-frame {
         background-color: #4caf50;
         color: white;
@@ -70,8 +78,10 @@
     </style>
   </head>
   <body>
+    <!-- Loading indicator to show while the AR experience is loading -->
     <div id="loading-indicator">正在加載AR體驗，請稍候...</div>
 
+    <!-- Frame control buttons for user interaction -->
     <div id="frame-controls">
       <button id="toggle-frame" class="frame-button">隱藏框架</button>
       <button id="black-frame" class="frame-button">Black</button>
@@ -81,8 +91,10 @@
       <button id="play-mp3" class="frame-button">播放音效</button>
     </div>
 
+    <!-- Video progress indicator -->
     <progress id="video-progress" value="0" max="100" style="width: 100%; display: none;"></progress>
 
+    <!-- AR Scene setup -->
     <a-scene
       mindar-image="imageTargetSrc: https://cdn.glitch.global/5ccc0053-b02d-4729-80a7-aa2242565329/KKtargets.mind?v=1703167402947;warmupTolerance:5; missTolerance:600; filterMinCF:0.000001; filterBeta:500"
       color-space="sRGB"
@@ -90,6 +102,7 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
+      <!-- Assets used in the AR scene -->
       <a-assets>
         <img
           id="profile"
@@ -97,7 +110,7 @@
         />
         <video
           id="video1"
-          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/測試影片.mp4"
+          src="https://raw.githubusercontent.com/isaoinvest/1111-TEST/main/%E6%B8%AC%E8%A9%A6%E5%BD%B1%E7%89%87.mp4"
           crossorigin="anonymous"
           loop
         ></video>
@@ -107,6 +120,7 @@
         ></a-asset-item>
       </a-assets>
 
+      <!-- Camera setup -->
       <a-camera
         position="0 0 0"
         look-controls="enabled: false"
@@ -114,8 +128,10 @@
         raycaster="far: 10; objects: .clickable"
       ></a-camera>
 
+      <!-- AR Target and video container -->
       <a-entity mindar-image-target="targetIndex: 0">
         <a-entity id="video-container">
+          <!-- Video to be displayed in AR -->
           <a-video
             src="#video1"
             height="1.05"
@@ -125,6 +141,7 @@
             class="clickable"
             click-handler1
           ></a-video>
+          <!-- Frame around the video -->
           <a-entity id="video-frame" visible="true">
             <!-- Top -->
             <a-box
@@ -156,36 +173,51 @@
     </a-scene>
 
     <script>
+      // Component to handle video click events
       AFRAME.registerComponent("click-handler1", {
         init: function () {
           var video = document.querySelector("#video1");
           var playing = false;
           this.el.addEventListener("click", function () {
+            console.log("Video clicked, playing state before click:", playing);
             if (!playing) {
-              video.play().catch((e) => console.error("Video play error:", e));
+              // Play the video if it's not already playing
+              video.play().then(() => {
+                console.log("Video is now playing.");
+              }).catch((e) => console.error("Video play error:", e));
             } else {
+              // Pause the video if it's currently playing
               video.pause();
+              console.log("Video is now paused.");
             }
-            playing = !playing;
+            playing = !playing; // Toggle playing state
           });
         },
       });
 
-      // MP3 播放按鈕
+      // MP3 play button logic
       const mp3Button = document.getElementById("play-mp3");
       const mp3Sound = document.getElementById("mp3-sound");
 
       mp3Button.addEventListener("click", () => {
-        mp3Sound.play();
+        console.log("MP3 button clicked.");
+        // Play the MP3 sound
+        mp3Sound.play().then(() => {
+          console.log("MP3 sound is now playing.");
+        }).catch((e) => console.error("MP3 play error:", e));
       });
 
       // Loading indicator logic
       const loadingIndicator = document.getElementById("loading-indicator");
       document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM fully loaded.");
+        // Show loading indicator while AR scene is loading
         loadingIndicator.style.display = "block";
       });
 
       document.querySelector("a-scene").addEventListener("loaded", () => {
+        console.log("A-Frame scene loaded.");
+        // Hide loading indicator once AR scene is loaded
         loadingIndicator.style.display = "none";
       });
 
@@ -193,6 +225,8 @@
       const raccoonModel = document.querySelector("a-gltf-model");
       if (raccoonModel) {
         raccoonModel.addEventListener("loaded", () => {
+          console.log("3D model loaded.");
+          // Animate the 3D model's position using GSAP
           gsap.to(raccoonModel.object3D.position, {
             y: "+=0.1",
             duration: 2,
@@ -207,6 +241,8 @@
       const clickableElements = document.querySelectorAll(".clickable");
       clickableElements.forEach((element) => {
         element.addEventListener("mouseenter", () => {
+          console.log("Mouse entered clickable element.");
+          // Scale up the element when hovered over
           gsap.to(element.object3D.scale, {
             x: 1.4,
             y: 1.4,
@@ -215,6 +251,8 @@
           });
         });
         element.addEventListener("mouseleave", () => {
+          console.log("Mouse left clickable element.");
+          // Scale back down when hover ends
           gsap.to(element.object3D.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
         });
       });
@@ -227,7 +265,9 @@
       const goldFrameBtn = document.querySelector("#gold-frame");
       const redFrameBtn = document.querySelector("#red-frame");
 
+      // Function to set frame color
       function setFrameColor(color) {
+        console.log("Setting frame color to:", color);
         const frameParts = videoFrame.querySelectorAll("a-box");
         frameParts.forEach((part) => {
           part.setAttribute("color", color);
@@ -235,13 +275,16 @@
         });
       }
 
+      // Toggle frame visibility
       let frameVisible = true;
       toggleFrameBtn.addEventListener("click", () => {
         frameVisible = !frameVisible;
         videoFrame.setAttribute("visible", frameVisible);
         toggleFrameBtn.textContent = frameVisible ? "隱藏框架" : "顯示框架";
+        console.log("Frame visibility toggled. Now visible:", frameVisible);
       });
 
+      // Frame color change event listeners
       blackFrameBtn.addEventListener("click", () => setFrameColor("#000000"));
       redFrameBtn.addEventListener("click", () => setFrameColor("#FF0000"));
 
@@ -250,23 +293,28 @@
       const progress = document.getElementById("video-progress");
 
       video.addEventListener("progress", () => {
+        console.log("Video progress event triggered.");
         progress.style.display = "block";
         if (video.buffered.length > 0) {
           const bufferedEnd = video.buffered.end(video.buffered.length - 1);
           const duration = video.duration;
           if (duration > 0) {
             progress.value = (bufferedEnd / duration) * 100;
+            console.log("Buffered percentage:", progress.value);
           }
         }
       });
 
       video.addEventListener("loadeddata", () => {
+        console.log("Video data loaded.");
         progress.style.display = "none";
       });
 
+      // Observer to automatically play video when it comes into view
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            console.log("Video is in view, attempting to play.");
             video.play().catch((e) => console.error("Video play error:", e));
           }
         });
